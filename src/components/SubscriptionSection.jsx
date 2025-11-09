@@ -1,3 +1,4 @@
+import React from "react";
 import { motion } from "framer-motion";
 import { BadgeCheck, Calendar, IndianRupee, Phone } from "lucide-react";
 
@@ -45,13 +46,17 @@ export default function SubscriptionSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className={`rounded-2xl border p-6 shadow-sm transition ${
+              whileHover={{ y: -6, scale: 1.02 }}
+              className={`group relative rounded-2xl border p-6 shadow-sm transition ${
                 p.highlight
                   ? "bg-emerald-50 border-emerald-200"
                   : "bg-white border-emerald-200"
               }`}
             >
-              <div className="flex items-start justify-between">
+              {/* hover ring */}
+              <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition duration-300 ring-2 ring-emerald-300/60" />
+
+              <div className="relative flex items-start justify-between">
                 <div>
                   <h3 className="text-xl font-semibold text-emerald-900">{p.name}</h3>
                   <div className="mt-2 flex items-end gap-1 text-emerald-800">

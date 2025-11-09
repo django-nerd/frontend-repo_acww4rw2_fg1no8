@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import React, { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Salad, Utensils, Sparkles } from "lucide-react";
 
 const meals = [
@@ -20,8 +21,20 @@ const meals = [
 ];
 
 export default function MealsSection() {
+  const sectionRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  // Parallax ranges for each card (subtle)
+  const offsets = [
+    useTransform(scrollYProgress, [0, 1], [12, -12]),
+    useTransform(scrollYProgress, [0, 1], [18, -18]),
+  ];
+
   return (
-    <section id="meals" className="relative bg-emerald-50">
+    <section id="meals" ref={sectionRef} className="relative bg-emerald-50">
       <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-emerald-100/40 to-transparent" />
       <div className="max-w-7xl mx-auto px-6 py-16 relative">
         <div className="text-center">
@@ -40,17 +53,22 @@ export default function MealsSection() {
         </div>
 
         <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
-          {meals.map(({ name, description, price, tags, icon: Icon }) => (
+          {meals.map(({ name, description, price, tags, icon: Icon }, idx) => (
             <motion.div
               key={name}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.5 }}
-              className="rounded-2xl border border-emerald-200 bg-white p-6 shadow-sm hover:shadow-md transition"
+              style={{ y: offsets[idx] }}
+              whileHover={{ y: -6, rotate: 0.15, scale: 1.01 }}
+              whileTap={{ scale: 0.995 }}
+              className="group relative rounded-2xl border border-emerald-200 bg-white p-6 shadow-sm transition will-change-transform"
             >
-              <div className="flex items-start gap-4">
-                <div className="h-12 w-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+              {/* hover glow */}
+              <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition duration-300 bg-gradient-to-br from-emerald-100/40 via-transparent to-emerald-200/30" />
+              <div className="relative flex items-start gap-4">
+                <div className="h-12 w-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shadow-inner">
                   <Icon className="h-6 w-6" />
                 </div>
                 <div className="flex-1">
